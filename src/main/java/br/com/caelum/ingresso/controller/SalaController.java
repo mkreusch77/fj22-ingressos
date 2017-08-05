@@ -1,16 +1,23 @@
 package br.com.caelum.ingresso.controller;
 
-import br.com.caelum.ingresso.dao.SalaDao;
-import br.com.caelum.ingresso.model.Sala;
+import java.util.Optional;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.validation.Valid;
-import java.util.Optional;
+import br.com.caelum.ingresso.dao.SalaDao;
+import br.com.caelum.ingresso.dao.SessaoDao;
+import br.com.caelum.ingresso.model.Sala;
 
 /**
  * Created by nando on 03/03/17.
@@ -19,6 +26,7 @@ import java.util.Optional;
 public class SalaController {
 
     @Autowired
+    private SessaoDao sessaoDao;
     private SalaDao salaDao;
 
 
@@ -31,12 +39,10 @@ public class SalaController {
         }
 
         modelAndView.addObject("sala", sala);
+        modelAndView.addObject("sessoes", sessaoDao.buscaSessoesDaSala(sala));
 
         return modelAndView;
     }
-
-
-
 
     @PostMapping("/admin/sala")
     @Transactional
@@ -81,7 +87,6 @@ public class SalaController {
 
         return modelAndView;
     }
-
 
     @DeleteMapping("/admin/sala/{id}")
     @ResponseBody
